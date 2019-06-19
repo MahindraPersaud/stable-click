@@ -1,0 +1,10 @@
+# application
+click
+python-terraform
+#aws-iam-authenticator
+#kubectl
+
+# dev
+black
+ipdb
+pytest
