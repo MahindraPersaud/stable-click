@@ -1,6 +1,4 @@
-ARG IMAGE=tiangolo/uwsgi-nginx-flask:python3.7
-
-FROM $IMAGE
+FROM tiangolo/uwsgi-nginx-flask:python3.7
 
 COPY ./app /app
 

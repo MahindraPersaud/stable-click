@@ -119,9 +119,9 @@ resource "aws_launch_configuration" "stable-click-worker-lc" {
 }
 
 resource "aws_autoscaling_group" "stable-click-worker-asg" {
-  desired_capacity     = 2
+  desired_capacity     = 6
   launch_configuration = "${aws_launch_configuration.stable-click-worker-lc.id}"
-  max_size             = 2
+  max_size             = 10
   min_size             = 1
   name                 = "terraform-eks-stable-click"
   vpc_zone_identifier  = ["${aws_subnet.stable-click-subnet.*.id}"]

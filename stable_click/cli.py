@@ -1,5 +1,6 @@
 from pathlib import Path
 import subprocess
+import os
 
 import click
 import python_terraform as pt
@@ -54,19 +55,9 @@ def deploy_cluster(
     return_code, _, _ = tf.apply(capture_output = False, skip_plan=True)
 
     subprocess.call(str(BASE_DIRECTORY/"k8Communication.sh"))
-    
-    #subprocess.Popen(['terraform', 'output', 'kubeconfig', '>', '~/.kube/config'])
-    #subprocess.call(['terraform', 'output', 'config_map_aws_auth > config-map-aws-auth.yaml'])
-    
-    #tf.output('kubeconfig > ~/.kube/config')
-    #tf.output('config_map_aws_auth > config-map-aws-auth.yaml')
-
-    #Popen("terraform output kubeconfig > ~/.kube/config", shell = True)
-    #Popen("terraform output config_map_aws_auth > config-map-aws-auth.yaml",shell = True)
-    #Popen("kubectl apply -f config-map-aws-auth.yaml", shell = True)
-    #Popen("eksctl create node-group --cluster=terraform-eks-halfclick-cluster -n=worker_nodes -t=t2.micro -m=1 -M=)
 
 @deployment_options
+@click.argument("git_path")
 def deploy_app(
     git_path,
     public_key_path = None,
@@ -74,19 +65,10 @@ def deploy_app(
     py = None,
     instance_type = None,
 ):
-    #Create a pod
+    repo_name = os.path.basename(os.path.normpath(git_path))
+    repo_name = repo_name.lower()
     
-    # Put docker image into Pod
-
-    # Deploy App
-    '''
-    cluster_name = "terraform-eks-halfclick-cluster"
-    node_group_name = "worker-nodes"
-    instance_type = "t2.micro"
-    nodes_min = "1"
-    nodes_max = "3"
-    call(["eksctl create node-group", "--cluster=" + str(cluster_name), "-n" + node_group_name, "-t" + instance_type, "-m" + nodes_min, "-M" + nodes_max], "--asg-acess")
-    '''
+    subprocess.call([str(BASE_DIRECTORY/"add_application.sh"), git_path , repo_name, str(DEPLOYMENT_DIRECTORY), str(BASE_DIRECTORY)])
 
 @main.command()
 def destroy_cluster():
