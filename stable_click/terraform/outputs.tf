@@ -1,5 +1,3 @@
-# Outputs
-
 locals {
   config_map_aws_auth = <<CONFIGMAPAWSAUTH
 apiVersion: v1
@@ -9,7 +7,7 @@ metadata:
   namespace: kube-system
 data:
   mapRoles: |
-    - rolearn: ${aws_iam_role.halfclick-cluster-iam.arn}
+    - rolearn: ${aws_iam_role.stable-click-worker-iam.arn}
       username: system:node:{{EC2PrivateDNSName}}
       groups:
         - system:bootstrappers
@@ -20,8 +18,8 @@ CONFIGMAPAWSAUTH
 apiVersion: v1
 clusters:
 - cluster:
-    server: ${aws_eks_cluster.halfclick-cluster.endpoint}
-    certificate-authority-data: ${aws_eks_cluster.halfclick-cluster.certificate_authority.0.data}
+    server: ${aws_eks_cluster.stable-click-cluster.endpoint}
+    certificate-authority-data: ${aws_eks_cluster.stable-click-cluster.certificate_authority.0.data}
   name: kubernetes
 contexts:
 - context:
