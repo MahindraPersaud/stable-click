@@ -1,11 +1,8 @@
-# one-click
-[![CircleCI](https://circleci.com/gh/InsightDataCommunity/one-click/tree/master.svg?style=svg)](https://circleci.com/gh/InsightDataCommunity/one-click/tree/master)
-
-One-click deployment for Machine Learning Flask apps
+Stable-click deployment for Flask Applications
 
 ## Before you Can Deploy
 
-The deploy might be one click ... installing dependencies, making your AWS account, and ensuring your project is compatible with one-click is not. If you've already setup your machine and your project skip to the [quick-start guide](#quick-start-guide).
+Deployment might be quick and easy, however, installing dependecies, making your AWS account, and ensuring your project is compatible with stable-click is not. If you've already setup yur machine and your project skip to the [quick-start guide](#quick-start-guide).
 
 Windows is not directly supported at this time. The [Ubuntu subsystem](https://helloacm.com/the-ubuntu-sub-system-new-bash-shell-in-windows-10/) for Windows 10 is recommended. 
 
@@ -46,30 +43,62 @@ Windows is not directly supported at this time. The [Ubuntu subsystem](https://h
 
 ### Software Requirements
 
-- You need terraform installed.
+- You need terraform version 0.11.x installed.
   - MacOs: `brew install terraform`. If you don't have homebrew, install it with this command: `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`.
 . 
   - linux: https://www.terraform.io/downloads.html
 
+- You need docker installed.
+  - MacOs: https://docs.docker.com/docker-for-mac/install/
+.
+  - linux: https://docs.docker.com/install/
+
+- You need Kubectl version 1.12 installed.
+  - MacOs/linux: `curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/darwin/amd64/kubectl`
+
+- You need aws-iam-autenticator installed.
+  - MacOS: `brew install aws-iam-authenticator`
+.
+  - linux: 
+  1. `curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator`
+  2. `chmod +x ./aws-iam-authenticator`
+  3. `mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH`
+  4. `echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc`
+  
+
+### Setting up Kubectl
+
+1. Make the kubectl binary executable
+  - `chmod +x ./kubectl`
+2. Move the binary to your PATH
+  - `sudo mv ./kubectl /usr/local/bin/kubectl`
+3. Test to ensure version 1.12 is installed
+  - `kubectl version`
+
+### Setting up Docker
+
+1. Create a docker account at https://hub.docker.com/
+2. In terminal run the following command: `docker login --username=yourhubusername --email=youremail@company.com` replacing with your docker credentials. Note: Docker will require sudo so please ensure that the current account has root capabilities. For linux: https://docs.docker.com/install/linux/linux-postinstall/
+
 ### App Compatibility
 
-One-click has several strict requirements for apps it can deploy. Rigid specifications keeps the tool easy to use. Check out some example [one-click compatible projects](#example-apps) that are compliant.
+Stable-click has several strict requirements for apps it can deploy. Rigid specifications keeps the tool easy to use. Check out some example [stable-click compatible projects](#example-apps) that are compliant.
 
 #### Directory Structure 
 
 - It is strongly recommended that your directory structure be flat. Having your app defined, your templates, and your static folder in a nested subfolder e.g. in `yourapp/flaskexample/` might cause problems. 
-- There must be a python file called `run.py` in the root of your project directory that will run your app. _**The name and the location are non-negotiable.**_ The file might looks something like:
+- There must be a python file called `main.py` in the root of your project directory that will run your app. _**The name and the location are non-negotiable.**_ The file might looks something like:
 ```python
 from views import app
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=80)
 ```
-- As of now, run your app in `run.py` on `host='0.0.0.0'` and `port=80`
+- As of now, run your app in `main.py` on `host='0.0.0.0'` and `port=80`
 
 #### Requirements File
 
-One-click builds a fresh python environment in ubuntu for every deployment. You need to clearly specify which python requirements your app depends on.
+Stable-click builds a fresh python environment in ubuntu for every deployment. You need to clearly specify which python requirements your app depends on.
 
 - Put the name (and potentially the version number) of every requirement in a file `requirements.txt` in the root of your project. Once again, _**The name and the location of `requirements.txt` are non-negotiable.**_ 
 
@@ -87,20 +116,20 @@ python run.py
 
 ## Quick-start Guide
 
-Consult the [app compatibility guidelines](#app-compatibility) before deploying for the first time. You may have to restructure your project before it will work with one-click.
+Consult the [app compatibility guidelines](#app-compatibility) before deploying for the first time. You may have to restructure your project before it will work with stable-click.
 
 ### Deploy Instructions
 
 1. Clone the repo
-2. Install the one-click package (from inside the cloned repo) `pip install -e .`
-3. Make a new directory to track the state of your deployment. It can be anywhere. This new *deployment directory* has nothing to do with your project directory that has your code. It will hold the backend state files for the deployment. Any time you want to reference this specific deployment you must be using one-click from its deployment directory.
-4. Deploy your project! Inside the deployment directory you just created, run for github deployment (**NOTE:** if you didn't use the default names when you generated your RSA keys, or if you're on windows, then you will have to specify the paths with the `--private_key_path` and `--public_key_path`command line options)
+2. Install the stable-click package (from inside the cloned repo) `pip3 install -e .`
+3. Make a new directory to track the state of your deployment. It can be anywhere. This new *deployment directory* has nothing to do with your project directory that has your code. It will hold the backend state files for the deployment. Any time you want to reference this specific deployment you must be using stable-click from its deployment directory.
+4. Deploy your cluster! Inside the deployment directory you just created, run for cluster deployment
 ```
-one-click deploy-github https://github.com/gusostow/EXAMPLE-localtype_site
+stable-click deploy-cluster
 ```
-or for local deployment
+5. Deploy your project! Inside the deployment directory you just created, run for github deployment (**NOTE:** if you didn't use the default names when you generated your RSA keys, or if you're on windows, then you will have to specify the paths with the `--private_key_path` and `--public_key_path`command line options)
 ```
-one-click deploy-local ~/path/to/your/flask/project/folder
+stable-click deploy-app https://github.com/gusostow/EXAMPLE-localtype_site
 ```
 
 Your app should now be publicly available from the `public_dns` output in your console. If you want to ssh into the instance this can be done with `ssh ubuntu@<public-dns>`
@@ -108,16 +137,16 @@ Your app should now be publicly available from the `public_dns` output in your c
 ### Destroy Instructions
 
 1. Navigate to your deployment directory, which is where the terraform state is located.
-2. Run `one-click destroy`
+2. Run `stable-click destroy-cluster`
 
 ### Updating your App
 
-As of now one-click does not provision automatic CI/CD support to keep your deployment up to date with pushes to your app's repo. To make updates:
+As of now stable-click does not provision automatic CI/CD support to keep your deployment up to date with pushes to your app's repo. To make updates:
 1. Push your changes to github
 2. Make sure you are inside the directory used for deployment, then destroy and re-deploy your project:
 ```
-one-click destroy
-one-click deploy-github <github-link-to-your-app>
+stable-click delete-app <github-link-to-your-app>
+stable-click deploy-app <github-link-to-your-app>
 ```
 
 ## Troubleshooting your Deployment
@@ -147,6 +176,5 @@ Here you will find the python errors you are accustomed to diagnosing when devel
 
 ## Example Apps 
 
-- [Localtype](https://github.com/gusostow/EXAMPLE-localtype_site)
 - [Hosteldirt](https://github.com/gusostow/EXAMPLE-hosteldirt)
 
