@@ -20,7 +20,7 @@ Windows is not directly supported at this time. The [Ubuntu subsystem](https://h
   export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
   export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
   ```
-  Then source your profile `souce ~/.bash_profile` and now your laptop will be fully authorized to create resources on AWS!
+  Then source your profile `source ~/.bash_profile` and now your laptop will be fully authorized to create resources on AWS!
   
 ### Create RSA Key Pair
 
@@ -54,16 +54,18 @@ Windows is not directly supported at this time. The [Ubuntu subsystem](https://h
   - linux: https://docs.docker.com/install/
 
 - You need Kubectl version 1.12 installed.
-  - MacOs/linux: `curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/darwin/amd64/kubectl`
+  - MacOs: `curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/darwin/amd64/kubectl`
+. 
+  - linux: `curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl`
 
 - You need aws-iam-autenticator installed.
   - MacOS: `brew install aws-iam-authenticator`
 .
   - linux: 
-  1. `curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator`
-  2. `chmod +x ./aws-iam-authenticator`
-  3. `mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH`
-  4. `echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc`
+    1. `curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator`
+    2. `chmod +x ./aws-iam-authenticator`
+    3. `mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH`
+    4. `echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc`
   
 
 ### Setting up Kubectl
@@ -127,12 +129,12 @@ Consult the [app compatibility guidelines](#app-compatibility) before deploying 
 ```
 stable-click deploy-cluster
 ```
-5. Deploy your project! Inside the deployment directory you just created, run for github deployment (**NOTE:** if you didn't use the default names when you generated your RSA keys, or if you're on windows, then you will have to specify the paths with the `--private_key_path` and `--public_key_path`command line options)
+5. Deploy your project! Inside the deployment directory you just created, run for github deployment.
 ```
 stable-click deploy-app https://github.com/gusostow/EXAMPLE-localtype_site
 ```
 
-Your app should now be publicly available from the `public_dns` output in your console. If you want to ssh into the instance this can be done with `ssh ubuntu@<public-dns>`
+Your app should now be publicly available from the `public_ip` output in your console.
 
 ### Destroy Instructions
 
@@ -159,19 +161,18 @@ Build logs for installations on the server and building the docker environment a
 
 ### Problems with Running your Code
 
-However, once the environment is set up, the server logs won't be directly visible in your console. If you get a 403 error when you visit your webpage url, then that means there is an error in your code, which probably has something to do with porting it a docker environment.
+If you get a 403 error when you visit your webpage url, then that means there is an error in your code, which probably has something to do with porting it a docker environment.
 
-You need to ssh into the server to view get visibility in those logs:
-1. Get shell access to the server. `ssh ubuntu@<outputed-dns-address>`. You don't need to specify the path to a key file because you already did that in the deploy phase.
-2. `cd app`
-3. View the logs. `docker-compose logs`
+You need to use kubectl to view those logs:
+1. Podname will always be the reponame in lowercase.
+2. Run the following replacing podname with the repo name: `kubectl -n kube-system logs podname` 
 
 Here you will find the python errors you are accustomed to diagnosing when developing your app.
 
 ### Other Fixes to Common Problems
 
 #### Broken Paths
-- **Problem:** Absolute paths to files like datasets or models will break. The path `~/gusostow/python/myproject/data/data.csv` might work fine on your laptop, it won't in the docker container built for your app, which has a different directory structure.
+- **Problem:** Absolute paths to files like datasets or models will break. The path `~/mahindra/python/myproject/data/data.csv` might work fine on your laptop, it won't in the docker container built for your app, which has a different directory structure.
 - **Solution:** Switch to referencing paths relatively to the python file that uses them, so they will be invariant to where the script is run. The `__file__` variable has that information.
 
 ## Example Apps 
