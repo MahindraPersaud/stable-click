@@ -1,5 +1,9 @@
 Stable-click deployment for Flask Applications
 
+## Architecture
+
+![Image of Architecture](architecture.png)
+
 ## Before you Can Deploy
 
 Deployment might be quick and easy, however, installing dependecies, making your AWS account, and ensuring your project is compatible with stable-click is not. If you've already setup yur machine and your project skip to the [quick-start guide](#quick-start-guide).
