@@ -127,12 +127,12 @@ Consult the [app compatibility guidelines](#app-compatibility) before deploying 
 ```
 stable-click deploy-cluster
 ```
-5. Deploy your project! Inside the deployment directory you just created, run for github deployment (**NOTE:** if you didn't use the default names when you generated your RSA keys, or if you're on windows, then you will have to specify the paths with the `--private_key_path` and `--public_key_path`command line options)
+5. Deploy your project! Inside the deployment directory you just created, run for github deployment.
 ```
 stable-click deploy-app https://github.com/gusostow/EXAMPLE-localtype_site
 ```
 
-Your app should now be publicly available from the `public_dns` output in your console. If you want to ssh into the instance this can be done with `ssh ubuntu@<public-dns>`
+Your app should now be publicly available from the `public_ip` output in your console.
 
 ### Destroy Instructions
 
