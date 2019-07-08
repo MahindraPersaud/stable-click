@@ -2,7 +2,7 @@ Stable-click deployment for Flask Applications
 
 ## Architecture
 
-![Image of Architecture](https://mahindrapersaud.github.com/images/architecture.png)
+![Image of Architecture](architecture.png)
 
 ## Before you Can Deploy
 
